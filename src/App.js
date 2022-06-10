@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import ShoppingItem from "./components/ShoppingItem";
+import styled from "styled-components";
 
-function App() {
+export default function App() {
+  const [shoppingList, setShoppingList] = useState([]);
+
+  useEffect(() => {
+    loadShoppinglist();
+    async function loadShoppinglist() {
+      try {
+        const response = await fetch(
+          "https://fetch-me.vercel.app/api/shopping/items"
+        );
+        const data1 = await response.json();
+        setShoppingList(data1.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Shopping List:</h1>
+      <ShoppingList>
+        {shoppingList.map((item) => (
+          <ShoppingItem key={item._id} name={item.name.de} />
+        ))}
+      </ShoppingList>
     </div>
   );
 }
 
-export default App;
+const ShoppingList = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+`;
