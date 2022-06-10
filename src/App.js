@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
 
-function App() {
+export default function App() {
+  const [shoppingList, setShoppingList] = useState([]);
+
+  useEffect(() => {
+    loadShoppinglist();
+    async function loadShoppinglist() {
+      try {
+        const response = await fetch(
+          "https://fetch-me.vercel.app/api/shopping/items"
+        );
+        const data1 = await response.json();
+        setShoppingList(data1.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, []);
+
+  const [filter, setFilter] = useState("");
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <p>
+        Shopping List:
+        <input
+          id="filter"
+          name="filter"
+          type="text"
+          value={filter}
+          onChange={(event) => setFilter(event.target.value)}
+        />
+      </p>
+      <ul>
+        {shoppingList
+          .filter((item) => item.name.de.includes(filter) || filter === "")
+          .map((item) => (
+            <li key={item._id}>{item.name.de}</li>
+          ))}
+      </ul>
     </div>
   );
 }
-
-export default App;
