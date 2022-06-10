@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import ShoppingItem from "./components/ShoppingItem";
-import styled from "styled-components";
 
 export default function App() {
   const [shoppingList, setShoppingList] = useState([]);
@@ -20,20 +18,27 @@ export default function App() {
     }
   }, []);
 
+  const [filter, setFilter] = useState("");
+
   return (
     <div className="App">
-      <h1>Shopping List:</h1>
-      <ShoppingList>
-        {shoppingList.map((item) => (
-          <ShoppingItem key={item._id} name={item.name.de} />
-        ))}
-      </ShoppingList>
+      <p>
+        Shopping List:
+        <input
+          id="filter"
+          name="filter"
+          type="text"
+          value={filter}
+          onChange={(event) => setFilter(event.target.value)}
+        />
+      </p>
+      <ul>
+        {shoppingList
+          .filter((item) => item.name.de.includes(filter) || filter === "")
+          .map((item) => (
+            <li key={item._id}>{item.name.de}</li>
+          ))}
+      </ul>
     </div>
   );
 }
-
-const ShoppingList = styled.ul`
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-`;
